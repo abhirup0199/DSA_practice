@@ -1,20 +1,27 @@
-#include<stdio.h>
-#include<stdbool.h>
-#include<limits.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <limits.h>
+#include <stdlib.h>
 
 int minKey(int key[], bool mstSet[], int V) {
-    int min = INT_MAX, min_index;
-    for(int v = 0; v < V; v++)
-        if(mstSet[v] == false && key[v] < min)
-            min = key[v], min_index = v;
+    int min = INT_MAX, min_index = -1;
+    for (int v = 0; v < V; v++) {
+        if (!mstSet[v] && key[v] < min) {
+            min = key[v];
+            min_index = v;
+        }
+    }
     return min_index;
 }
 
 void printMST(int parent[], int **graph, int V) {
+    int totalWeight = 0;
     printf("Edge \tWeight\n");
-    for(int i = 1; i < V; i++)
+    for (int i = 1; i < V; i++) {
         printf("%d - %d \t%d\n", parent[i], i, graph[i][parent[i]]);
+        totalWeight += graph[i][parent[i]];
+    }
+    printf("Total Weight of MST: %d\n", totalWeight);
 }
 
 void primMST(int **graph, int V) {
@@ -22,19 +29,26 @@ void primMST(int **graph, int V) {
     int *key = (int *)malloc(V * sizeof(int));
     bool *mstSet = (bool *)malloc(V * sizeof(bool));
 
-    for(int i = 0; i < V; i++)
-        key[i] = INT_MAX, mstSet[i] = false;
+    for (int i = 0; i < V; i++) {
+        key[i] = INT_MAX;
+        mstSet[i] = false;
+    }
 
     key[0] = 0;
     parent[0] = -1;
 
-    for(int count = 0; count < V-1; count++) {
+    for (int count = 0; count < V - 1; count++) {
         int u = minKey(key, mstSet, V);
         mstSet[u] = true;
-        for(int v = 0; v < V; v++)
-            if(graph[u][v] && mstSet[v] == false && graph[u][v] < key[v])
-                parent[v] = u, key[v] = graph[u][v];
+
+        for (int v = 0; v < V; v++) {
+            if (graph[u][v] != 0 && !mstSet[v] && graph[u][v] < key[v]) {
+                parent[v] = u;
+                key[v] = graph[u][v];
+            }
+        }
     }
+
     printMST(parent, graph, V);
 
     free(parent);
@@ -44,9 +58,9 @@ void primMST(int **graph, int V) {
 
 void inputAdjacencyMatrix(int **matrix, int V) {
     printf("\nEnter adjacency matrix (0 for no edge):\n");
-    for(int i = 0; i < V; i++) {
-        for(int j = 0; j < V; j++) {
-            if(i == j) {
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (i == j) {
                 matrix[i][j] = 0;
                 continue;
             }
@@ -59,9 +73,9 @@ void inputAdjacencyMatrix(int **matrix, int V) {
 void inputEdgeList(int **matrix, int V, int E) {
     printf("\nEnter edges in format: source destination weight\n");
     printf("(Vertex numbering starts from 0)\n");
-    for(int i = 0; i < E; i++) {
+    for (int i = 0; i < E; i++) {
         int src, dest, weight;
-        printf("Edge %d: ", i+1);
+        printf("Edge %d: ", i + 1);
         scanf("%d %d %d", &src, &dest, &weight);
         matrix[src][dest] = weight;
         matrix[dest][src] = weight; // Undirected graph
@@ -69,8 +83,7 @@ void inputEdgeList(int **matrix, int V, int E) {
 }
 
 int main() {
-    int V, E;
-    int choice;
+    int V, E, choice;
 
     printf("PRIM'S ALGORITHM IMPLEMENTATION\n");
     printf("-------------------------------\n");
@@ -79,9 +92,9 @@ int main() {
 
     // Allocate matrix dynamically
     int **graph = (int **)malloc(V * sizeof(int *));
-    for(int i = 0; i < V; i++) {
+    for (int i = 0; i < V; i++) {
         graph[i] = (int *)malloc(V * sizeof(int));
-        for(int j = 0; j < V; j++)
+        for (int j = 0; j < V; j++)
             graph[i][j] = 0; // Initialize with 0 (no edge)
     }
 
@@ -91,16 +104,17 @@ int main() {
     printf("Enter your choice (1 or 2): ");
     scanf("%d", &choice);
 
-    if(choice == 1) {
+    if (choice == 1) {
         printf("\nEnter number of edges: ");
         scanf("%d", &E);
         inputEdgeList(graph, V, E);
-    }
-    else if(choice == 2) {
+    } else if (choice == 2) {
         inputAdjacencyMatrix(graph, V);
-    }
-    else {
+    } else {
         printf("Invalid choice. Exiting.\n");
+        for (int i = 0; i < V; i++)
+            free(graph[i]);
+        free(graph);
         return 1;
     }
 
@@ -108,7 +122,7 @@ int main() {
     primMST(graph, V);
 
     // Free memory
-    for(int i = 0; i < V; i++)
+    for (int i = 0; i < V; i++)
         free(graph[i]);
     free(graph);
 
