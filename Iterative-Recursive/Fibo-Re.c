@@ -1,5 +1,9 @@
 #include <stdio.h>
-int c=0;
+
+// Global variable to count number of function calls
+int c = 0;
+
+// Recursive Fibonacci function
 int fibonacci(int n) {
     c++;
     if (n <= 1) {
@@ -14,11 +18,15 @@ int main() {
     printf("Enter the number of terms in the Fibonacci series: ");
     scanf("%d", &n);
 
-    printf("Fibonacci Series: ");
+    printf("Fibonacci Series up to %d terms:\n", n);
     for (int i = 0; i < n; i++) {
         printf("%d ", fibonacci(i));
     }
-    printf("\n");
-    printf("Complexity = %d",c);
+
+    printf("\nTotal recursive calls: %d\n", c);
+
+    // Time Complexity Info
+    printf("Time Complexity of Recursive Fibonacci: O(2^n)\n");
+
     return 0;
 }

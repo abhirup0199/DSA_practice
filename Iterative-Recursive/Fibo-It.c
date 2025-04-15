@@ -21,7 +21,7 @@ int main()
             second = next;
         }
         printf("%d ", next);
-        com=com+6;
+        com++;
     }
     printf("\nComplexity:-%d\n",com);
     return 0;

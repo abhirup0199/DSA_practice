@@ -1,45 +1,49 @@
-//Binary search Recursive
-
 #include <stdio.h>
+#include <math.h>  // For log2()
 
+static int c = 0; // Counter for time complexity
 
 int binary_search(int a[], int search, int low, int high) {
-    if (low > high) {
-        return -1;
-    }
+    if (low <= high) {
+        c++; // Increment the counter for each recursive call
 
-    int mid = low + (high - low) / 2;
-    if (a[mid] == search) {
-        return mid;
+        int mid = low + (high - low) / 2;
+        if (a[mid] == search) {
+            return mid;
+        } else if (a[mid] > search) {
+            return binary_search(a, search, low, mid - 1);
+        } else {
+            return binary_search(a, search, mid + 1, high);
+        }
     }
-    else if (a[mid] > search) {
-        return binary_search(a, search, low, mid - 1);
-    }
-    else {
-        return binary_search(a, search, mid + 1, high);
-    }
+    return -1;
 }
 
 int main() {
-    int size;
-    printf("Enter the number of elements in the sorted array: ");
-    scanf("%d", &size);
+    int n;
+    printf("Enter the number of elements in the sorted array (N): ");
+    scanf("%d", &n);
 
-    int sorted_array[size];
+    int a[n];
     printf("Enter the elements of the sorted array:\n");
-    for (int i = 0; i < size; i++) {
-        scanf("%d", &sorted_array[i]);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &a[i]);
     }
 
-    int target_value;
+    int target;
     printf("Enter the target value to search for: ");
-    scanf("%d", &target_value);
-    int result = binary_search(sorted_array, target_value, 0, size - 1);
-    if (result != -1) {
-        printf("Element found at index: %d\n", result);
+    scanf("%d", &target);
+
+    int res = binary_search(a, target, 0, n - 1);
+
+    if (res != -1) {
+        printf("Element found at index: %d\n", res);
     } else {
         printf("Element not found in the array.\n");
     }
+
+    // Time complexity computation
+    printf("Actual number of recursive steps taken: %d\n", c);
 
     return 0;
 }
