@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 int count = 0;
 
@@ -7,6 +8,7 @@ void swap(int* a, int* b)
     int temp = *a;
     *a = *b;
     *b = temp;
+    count++;
 }
 
 int partition(int arr[], int low, int high) 
@@ -32,7 +34,6 @@ void quickSort(int arr[], int low, int high)
 {
     if (low < high) 
     {
-        count++;
         int pi = partition(arr, low, high);
         quickSort(arr, low, pi - 1);
         quickSort(arr, pi + 1, high);
@@ -42,31 +43,32 @@ void quickSort(int arr[], int low, int high)
 int main() 
 {
     int size;
-    
-    printf("Give the size of the array:-");
+
+    printf("Give the size of the array: ");
     scanf("%d", &size);
-    
+
     int arr[size];
-    
-    printf("Give the elements of the array--------\n");
-    for (int i = 0; i < size; i++)
+
+    printf("Give the elements of the array:\n");
+    for (int i = 0; i < size; i++) 
     {
-        printf("Array[%d]=", i);
+        printf("Array[%d] = ", i);
         scanf("%d", &arr[i]);
     }
 
-    printf("Given array is ------------\n");
-    for (int i = 0; i < size; i++)
-        printf("%d ", arr[i]);
-    count++;
-
-    quickSort(arr, 0, size - 1);
-    
-    printf("\nSorted array: \n");
+    printf("\nGiven array:\n");
     for (int i = 0; i < size; i++)
         printf("%d ", arr[i]);
     printf("\n");
-    
-    printf("Number of comparisons: %d\n", count);
+
+    quickSort(arr, 0, size - 1);
+
+    printf("\nSorted array:\n");
+    for (int i = 0; i < size; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+
+    printf("Number of operations (comparisons and swaps): %d\n", count);
+
     return 0;
 }
