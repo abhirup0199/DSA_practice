@@ -1,48 +1,44 @@
 #include <stdio.h>
 
+int c = 0; // Global variable to count comparisons
+
+// Function to perform Selection Sort in ascending order
 void selection_sort(int a[], int n)
 {
     for (int i = 0; i < n - 1; i++)
     {
         int min = i;
-        int max = i;
+        c++; // Count the comparison below
 
-        // Finding the min and max in the unsorted part
-        for (int j = i; j < n; j++)
+        for (int j = i + 1; j < n; j++)
         {
+            c++; // Count the comparison below
             if (a[j] < a[min])
                 min = j;
-            if (a[j] > a[max])
-                max = j;
         }
 
-        // Swapping min with the first element of the unsorted part
+        // Swap only if needed
         if (min != i)
         {
             int tmp = a[i];
             a[i] = a[min];
             a[min] = tmp;
-
-            // If max was at i, update max to min's old position
-            if (max == i)
-                max = min;
+            c+= 3; // Count the three assignments in the swap
         }
-
-        // Swapping max with the last element of the unsorted part
-        if (max != n - i - 1)
-        {
-            int tmp = a[n - i - 1];
-            a[n - i - 1] = a[max];
-            a[max] = tmp;
-        }
+        c++; // Count the comparison for the swap check
     }
 
-    printf("The sorted array is ----\n");
+    // Display the sorted array
+    printf("\nThe sorted array is:\n");
     for (int i = 0; i < n; i++)
     {
         printf("%d\t", a[i]);
     }
     printf("\n");
+
+    // Display comparison count
+    printf("Total number of comparisons: %d\n", c);
+
 }
 
 int main()

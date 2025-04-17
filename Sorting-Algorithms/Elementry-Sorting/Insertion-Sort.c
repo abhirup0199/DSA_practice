@@ -1,42 +1,55 @@
 #include <stdio.h>
 
-int main()
+// Function to perform insertion sort and return operation count
+int insertionSort(int arr[], int n)
 {
-    int size;
     int count = 0;
-    printf("Give the size of the array:-");
-    scanf("%d", &size);
-    int arr[size];
-    printf("Give the elements of the array--------\n");
-    for (int i = 0; i < size; i++)
+
+    for (int i = 1; i < n; i++)
     {
-        printf("Array[%d]=", i);
-        scanf("%d", &arr[i]);
-    }
+        int key = arr[i];
+        int j = i - 1;
 
-    printf("Given array is ------------\n");
-    for (int i = 0; i < size; i++)
-        printf("%d ", arr[i]);
-    
-    for (int step = 1; step < size; step++)
-    {
-
-        int key = arr[step];
-        int j = step - 1;
-
-        while (j >= 0 && key < arr[j])
+        while (j >= 0 && arr[j] > key)
         {
-            count++;
             arr[j + 1] = arr[j];
-            --j;
+            j--;
+            count += 2; // counting shifts
         }
 
         arr[j + 1] = key;
-        count++;
+        count++; // for inserting key
     }
-    printf("\nSorted array is -------------\n");
-    for (int i = 0; i < size; i++)
+
+    return count;
+}
+
+int main()
+{
+    int N;
+    printf("Enter the size of the array (N): ");
+    scanf("%d", &N);
+
+    int arr[N];
+    printf("Enter %d elements of the array:\n", N);
+    for (int i = 0; i < N; i++)
+    {
+        printf("Element %d: ", i + 1);
+        scanf("%d", &arr[i]);
+    }
+
+    printf("\nOriginal array: ");
+    for (int i = 0; i < N; i++)
         printf("%d ", arr[i]);
-    printf("\nComplexity = %d\n", count);
+
+    // Call the sorting function
+    int complexity = insertionSort(arr, N);
+
+    printf("\nSorted array in ascending order: ");
+    for (int i = 0; i < N; i++)
+        printf("%d ", arr[i]);
+
+    printf("\n\nTime Complexity (approx. operation count): %d\n", complexity);
+
     return 0;
 }
