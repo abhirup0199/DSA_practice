@@ -1,24 +1,26 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
-int strLen(char* s) {
-    int len = 0;
-    while (s[len]) len++;
-    return len;
-}
+#define MAX 1000
 
-void computeLPS(char* pat, int* lps, int M) {
+long long operationCount = 0;
+
+// Function to compute the LPS (Longest Prefix Suffix) array
+void computeLPSArray(char *pat, int M, int *lps) {
     int len = 0;
     lps[0] = 0;
+    operationCount++;
+
     int i = 1;
     while (i < M) {
+        operationCount++;
         if (pat[i] == pat[len]) {
             len++;
             lps[i] = len;
             i++;
         } else {
-            if (len) {
-                len = lps[len-1];
+            if (len != 0) {
+                len = lps[len - 1];
             } else {
                 lps[i] = 0;
                 i++;
@@ -27,43 +29,50 @@ void computeLPS(char* pat, int* lps, int M) {
     }
 }
 
-void KMPSearch(char* pat, char* txt) {
-    int M = strLen(pat);
-    int N = strLen(txt);
-    int* lps = malloc(M * sizeof(int));
-    computeLPS(pat, lps, M);
-    
-    int i = 0, j = 0;
-    printf("Matches at: ");
+// KMP search function
+void KMPSearch(char *pat, char *txt) {
+    int M = strlen(pat);
+    int N = strlen(txt);
+    int lps[M];
+
+    computeLPSArray(pat, M, lps);
+
+    int i = 0; // index for txt[]
+    int j = 0; // index for pat[]
+
+    printf("\nPattern found at index: ");
     while (i < N) {
+        operationCount++;
         if (pat[j] == txt[i]) {
-            j++;
             i++;
+            j++;
         }
+
         if (j == M) {
-            printf("%d ", i-j);
-            j = lps[j-1];
+            printf("%d ", i - j);
+            j = lps[j - 1];
+            operationCount += 2;
         } else if (i < N && pat[j] != txt[i]) {
-            if (j) j = lps[j-1];
-            else i++;
+            if (j != 0)
+                j = lps[j - 1];
+            else
+                i++;
         }
     }
-    free(lps);
+    printf("\n");
 }
 
 int main() {
-    char txt[1000], pat[1000];
-    
-    printf("Enter text: ");
-    fgets(txt, 1000, stdin);
-    int txtLen = strLen(txt);
-    if (txt[txtLen-1] == '\n') txt[txtLen-1] = '\0';
-    
-    printf("Enter pattern: ");
-    fgets(pat, 1000, stdin);
-    int patLen = strLen(pat);
-    if (pat[patLen-1] == '\n') pat[patLen-1] = '\0';
-    
+    char txt[MAX], pat[MAX];
+
+    printf("Enter the text string: ");
+    scanf(" %[^\n]", txt);
+
+    printf("Enter the pattern string: ");
+    scanf(" %[^\n]", pat);
+
     KMPSearch(pat, txt);
+
+    printf("Total operations (approximate steps): %lld\n", operationCount);
     return 0;
 }
