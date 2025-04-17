@@ -1,42 +1,79 @@
 #include <stdio.h>
+#define MAX_SIZE 1000
 
-void heapify(int a[], int n, int i) {
+long long operationCount = 0; // To estimate time complexity
+
+// Function to swap two integers
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+    operationCount++; // Count swap as an operation
+}
+
+// Heapify function to maintain max heap property
+void heapify(int arr[], int n, int i) {
     int largest = i;
-    int l = 2*i + 1;
-    int r = 2*i + 2;
-    if (l < n && a[l] > a[largest])
-        largest = l;
-    if (r < n && a[r] > a[largest])
-        largest = r;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+        operationCount++; // Count comparison
+    }
+
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+        operationCount++; // Count comparison
+    }
+
     if (largest != i) {
-        int temp = a[i];
-        a[i] = a[largest];
-        a[largest] = temp;
-        heapify(a, n, largest);
+        swap(&arr[i], &arr[largest]);
+        heapify(arr, n, largest); // Recursive call
     }
 }
 
-void buildHeap(int a[], int n) {
-    int i;
-    for (i = n/2 - 1; i >= 0; i--)
-        heapify(a, n, i);
+// Heap sort function
+void heapSort(int arr[], int n) {
+    // Build max heap
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // Extract elements from heap one by one
+    for (int i = n - 1; i > 0; i--) {
+        swap(&arr[0], &arr[i]);    // Move current root to end
+        heapify(arr, i, 0);        // Call heapify on the reduced heap
+    }
+}
+
+// Function to print array
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
 }
 
 int main() {
-    int n;
+    int arr[MAX_SIZE], n;
+
     printf("Enter number of elements: ");
     scanf("%d", &n);
-    
-    int a[n];
-    printf("Enter elements:\n");
-    for (int i = 0; i < n; i++)
-        scanf("%d", &a[i]);
 
-    buildHeap(a, n);
+    printf("Enter %d elements:\n", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
 
-    printf("Heap after building:\n");
-    for (int i = 0; i < n; i++)
-        printf("%d ", a[i]);
-    printf("\n");
+    printf("Original array:\n");
+    printArray(arr, n);
+
+    heapSort(arr, n);
+
+    printf("Sorted array (ascending order):\n");
+    printArray(arr, n);
+
+    printf("Estimated operation count (time complexity estimation): %lld\n", operationCount);
+
     return 0;
 }
